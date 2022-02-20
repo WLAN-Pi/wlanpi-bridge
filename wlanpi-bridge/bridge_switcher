@@ -1,0 +1,92 @@
+#!/bin/bash
+
+#
+# bridge_switcher - script to switch bridge mode on/off
+#                   (usually called from the WLANPi menu system)    
+#
+# Written by Nigel Bowden <wifinigel@gmail.com>.
+#
+
+set -e
+
+NAME=bridge_switcher
+DESC="Script to switch bridge mode on/off"
+STATUS_FILE="/etc/wlanpi-state"
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+###############################################################################
+#
+# Activate bridge mode:
+#
+# 1. TBA
+# 2. TBA
+# 3. TBA...etc
+#
+###############################################################################
+
+bridge_on () {
+  
+  # check what state the WLAN Pi is in
+  PI_STATUS=`cat $STATUS_FILE | grep 'classic'` || true
+  if  [ -z "$PI_STATUS" ]; then
+     echo "Failed - WLAN Pi is not in classic mode."
+     exit 1
+  fi
+
+  # CONTINUE HERE....
+
+}
+
+###############################################################################
+#
+# De-activate bridge mode:
+#
+# 1. TBA
+# 2. TBA
+# 3. TBA...etc
+#
+###############################################################################
+
+bridge_off () {
+
+    # TBA
+
+}
+
+
+status () {
+
+  PI_STATUS=`cat $STATUS_FILE | grep 'bridge'` || true
+  if  [ -z "$PI_STATUS" ]; then
+    echo "bridge mode is currently disabled"
+    exit 0
+  else
+    echo "bridge mode is currently enabled"
+    exit 0
+  fi
+
+}
+
+
+case "$1" in
+  on)
+        bridge_on
+        ;;
+  off)
+        bridge_off
+        ;;
+  status)
+        status
+        ;;
+  *)
+        N=/etc/wlanpi-bridge/$NAME
+        echo "Usage: $N {on|off|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
