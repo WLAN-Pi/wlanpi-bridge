@@ -7,8 +7,6 @@
 # Written by Nigel Bowden <wifinigel@gmail.com>.
 #
 
-set -e
-
 NAME=bridge_switcher
 DESC="Script to switch bridge mode on/off"
 STATUS_FILE="/etc/wlanpi-state"
@@ -65,7 +63,7 @@ bridge_on () {
   ln -s /etc/wlanpi-bridge/systemd/network/eth0.network $NETWORK_DIR/eth0.network
   ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
   ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
-  ln -s /etc/wlanpi-bridge/systemd/network/br0.dev $NETWORK_DIR/br0.dev
+  ln -s /etc/wlanpi-bridge/systemd/network/br0.netdev $NETWORK_DIR/br0.netdev
 
   # Signal that bridge mode is active
   echo "bridge" > $STATUS_FILE
@@ -99,7 +97,7 @@ bridge_off () {
   unlink $NETWORK_DIR/eth0.network
   unlink $NETWORK_DIR/eth1.network
   unlink $NETWORK_DIR/usb1.network
-  unlink $NETWORK_DIR/br0.dev
+  unlink $NETWORK_DIR/br0.netdev
 
   # Restore old files
   if [ -e $NETWORK_DIR/eth0.network.brm ]; then
@@ -115,7 +113,7 @@ bridge_off () {
   fi
 
   if [ -e /etc/network/interfaces.brm ]; then
-    cp /etc/network/interfaces.brm /etc/network/interfaces.brm
+    cp /etc/network/interfaces.brm /etc/network/interfaces
   fi
 
   echo "WLAN Pi will now reboot"
