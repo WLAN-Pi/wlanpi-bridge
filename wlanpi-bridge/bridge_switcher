@@ -22,9 +22,9 @@ fi
 #
 # Activate bridge mode:
 #
-# 1. TBA
-# 2. TBA
-# 3. TBA...etc
+# 1. Backup existing network files
+# 2. Link to new network config files
+# 3. reboot
 #
 ###############################################################################
 
@@ -37,7 +37,54 @@ bridge_on () {
      exit 1
   fi
 
-  # CONTINUE HERE....
+  echo "Enabling Bridge mode..."
+  # Backup files
+  NETWORK_DIR=/etc/systemd/network
+
+  if [ -e $NETWORK_DIR/eth0.network ]; then
+    cp $NETWORK_DIR/eth0.network $NETWORK_DIR/eth0.network.brm
+  fi
+
+  if [ -e $NETWORK_DIR/eth1.network ]; then
+    cp $NETWORK_DIR/eth1.network $NETWORK_DIR/eth1.network.brm
+  fi
+
+  if [ -e $NETWORK_DIR/usb1.network ]; then
+    cp $NETWORK_DIR/usb1.network $NETWORK_DIR/usb1.network.brm
+  fi
+
+  if [ -e /etc/network/interfaces ]; then
+    cp /etc/network/interfaces /etc/network/interfaces.brm
+  fi
+
+# Remove existing network files
+  if [ -e $NETWORK_DIR/eth0.network ]; then
+    rm $NETWORK_DIR/eth0.network
+  fi
+
+  if [ -e $NETWORK_DIR/eth1.network ]; then
+    rm $NETWORK_DIR/eth1.network
+  fi
+
+  if [ -e $NETWORK_DIR/usb1.network ]; then
+    rm $NETWORK_DIR/usb1.network
+  fi
+
+  if [ -e /etc/network/interfaces ]; then
+    rm /etc/network/interfaces
+  fi
+
+  # Link to file in bridge mode dir
+  ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
+  ln -s /etc/wlanpi-bridge/systemd/network/usb0.network $NETWORK_DIR/usb0.network
+  ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
+  ln -s /etc/wlanpi-bridge/systemd/network/br0.dev $NETWORK_DIR/br0.dev
+
+  # Signal that wconsole active
+  echo "bridge" > $STATUS_FILE
+  echo "WLAN Pi will now reboot to launch bridge mode."
+  sleep 1
+  reboot
 
 }
 
@@ -45,16 +92,50 @@ bridge_on () {
 #
 # De-activate bridge mode:
 #
-# 1. TBA
-# 2. TBA
-# 3. TBA...etc
+# 1. Remove file links
+# 2. Rename backedup files to original names
+# 3. Reboot
 #
 ###############################################################################
 
 bridge_off () {
 
-    # TBA
+  # check what state the WLAN Pi is in
+  PI_STATUS=`cat $STATUS_FILE | grep 'bridge'` || true
+  if  [ -z "$PI_STATUS" ]; then
+     echo "Failed - WLAN Pi is not in bridge mode."
+     exit 1
+  fi
 
+  echo "Disabling bridge mode..."
+  # Remove sym links to wconsole
+  unlink $NETWORK_DIR/eth1.network
+  unlink $NETWORK_DIR/usb0.network
+  unlink $NETWORK_DIR/usb1.network
+  unlink $NETWORK_DIR/br0.dev
+
+  # Restore old files
+  if [ -e $NETWORK_DIR/eth0.network.brm ]; then
+    cp $NETWORK_DIR/eth0.network.brm $NETWORK_DIR/eth0.network
+  fi
+
+  if [ -e $NETWORK_DIR/eth1.network.brm ]; then
+    cp $NETWORK_DIR/eth1.network.brm $NETWORK_DIR/eth1.network
+  fi
+
+  if [ -e $NETWORK_DIR/usb1.network.brm ]; then
+    cp $NETWORK_DIR/usb1.network.brm $NETWORK_DIR/usb1.network
+  fi
+
+  if [ -e /etc/network/interfaces.brm ]; then
+    cp /etc/network/interfaces.brm /etc/network/interfaces.brm
+  fi
+
+  echo "WLAN Pi will now reboot"
+  echo "classic" > $STATUS_FILE
+  sleep 1
+  reboot
+  
 }
 
 
