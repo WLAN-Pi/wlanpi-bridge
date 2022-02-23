@@ -39,44 +39,31 @@ bridge_on () {
   fi
 
   echo "Enabling Bridge mode..."
-  # Backup files
+  # Backup files & remove originals
   
   if [ -e $NETWORK_DIR/eth0.network ]; then
     cp $NETWORK_DIR/eth0.network $NETWORK_DIR/eth0.network.brm
-  fi
-
-  if [ -e $NETWORK_DIR/eth1.network ]; then
-    cp $NETWORK_DIR/eth1.network $NETWORK_DIR/eth1.network.brm
-  fi
-
-  if [ -e $NETWORK_DIR/usb1.network ]; then
-    cp $NETWORK_DIR/usb1.network $NETWORK_DIR/usb1.network.brm
-  fi
-
-  if [ -e /etc/network/interfaces ]; then
-    cp /etc/network/interfaces /etc/network/interfaces.brm
-  fi
-
-# Remove existing network files
-  if [ -e $NETWORK_DIR/eth0.network ]; then
     rm $NETWORK_DIR/eth0.network
   fi
 
   if [ -e $NETWORK_DIR/eth1.network ]; then
+    cp $NETWORK_DIR/eth1.network $NETWORK_DIR/eth1.network.brm
     rm $NETWORK_DIR/eth1.network
   fi
 
   if [ -e $NETWORK_DIR/usb1.network ]; then
+    cp $NETWORK_DIR/usb1.network $NETWORK_DIR/usb1.network.brm
     rm $NETWORK_DIR/usb1.network
   fi
 
   if [ -e /etc/network/interfaces ]; then
+    cp /etc/network/interfaces /etc/network/interfaces.brm
     rm /etc/network/interfaces
   fi
 
   # Link to file in bridge mode dir
+  ln -s /etc/wlanpi-bridge/systemd/network/eth0.network $NETWORK_DIR/eth0.network
   ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
-  ln -s /etc/wlanpi-bridge/systemd/network/usb0.network $NETWORK_DIR/usb0.network
   ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
   ln -s /etc/wlanpi-bridge/systemd/network/br0.dev $NETWORK_DIR/br0.dev
 
@@ -109,8 +96,8 @@ bridge_off () {
 
   echo "Disabling bridge mode..."
   # Remove sym links to bridge mode
+  unlink $NETWORK_DIR/eth0.network
   unlink $NETWORK_DIR/eth1.network
-  unlink $NETWORK_DIR/usb0.network
   unlink $NETWORK_DIR/usb1.network
   unlink $NETWORK_DIR/br0.dev
 
