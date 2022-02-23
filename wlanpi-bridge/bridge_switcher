@@ -12,6 +12,7 @@ set -e
 NAME=bridge_switcher
 DESC="Script to switch bridge mode on/off"
 STATUS_FILE="/etc/wlanpi-state"
+NETWORK_DIR=/etc/systemd/network
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -39,8 +40,7 @@ bridge_on () {
 
   echo "Enabling Bridge mode..."
   # Backup files
-  NETWORK_DIR=/etc/systemd/network
-
+  
   if [ -e $NETWORK_DIR/eth0.network ]; then
     cp $NETWORK_DIR/eth0.network $NETWORK_DIR/eth0.network.brm
   fi
@@ -135,7 +135,7 @@ bridge_off () {
   echo "classic" > $STATUS_FILE
   sleep 1
   reboot
-  
+
 }
 
 
