@@ -94,10 +94,21 @@ bridge_off () {
 
   echo "Disabling bridge mode..."
   # Remove sym links to bridge mode
-  unlink $NETWORK_DIR/eth0.network
-  unlink $NETWORK_DIR/eth1.network
-  unlink $NETWORK_DIR/usb1.network
-  unlink $NETWORK_DIR/br0.netdev
+  if [ -e $NETWORK_DIR/eth0.network ]; then
+    unlink $NETWORK_DIR/eth0.network
+  fi
+  
+  if [ -e $NETWORK_DIR/eth1.network ]; then
+    unlink $NETWORK_DIR/eth1.network
+  fi
+
+  if [ -e $NETWORK_DIR/usb1.network ]; then
+    unlink $NETWORK_DIR/usb1.network
+  fi
+
+  if [ -e $NETWORK_DIR/br0.netdev ]; then
+    unlink $NETWORK_DIR/br0.netdev
+  fi
 
   # Restore old files
   if [ -e $NETWORK_DIR/eth0.network.brm ]; then
