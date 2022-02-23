@@ -1,0 +1,14 @@
+Source: wlanpi-bridge
+Section: embedded
+Priority: optional
+Maintainer: Nigel Bowden <wifinigel@gmail.com>
+Build-Depends: debhelper (>=9), build-essential
+Standards-Version: 3.9.8
+Homepage: https://github.com/WLAN-Pi/wlanpi-bridge
+
+Package: wlanpi-bridge
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: WLAN Pi bridge mode
+ WLAN Pi wireless bridge mode.
