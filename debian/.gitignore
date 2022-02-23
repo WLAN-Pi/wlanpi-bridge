@@ -1,7 +1,7 @@
-wlanpi-wconsole.*.debhelper
-wlanpi-wconsole.substvars
-wlanpi-wconsole/
-wlanpi-wconsole-*/
+wlanpi-bridge.*.debhelper
+wlanpi-bridge.substvars
+wlanpi-bridge/
+wlanpi-bridge-*/
 debhelper*
 files
 *.log

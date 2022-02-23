@@ -80,7 +80,7 @@ bridge_on () {
   ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
   ln -s /etc/wlanpi-bridge/systemd/network/br0.dev $NETWORK_DIR/br0.dev
 
-  # Signal that wconsole active
+  # Signal that bridge mode is active
   echo "bridge" > $STATUS_FILE
   echo "WLAN Pi will now reboot to launch bridge mode."
   sleep 1
@@ -108,7 +108,7 @@ bridge_off () {
   fi
 
   echo "Disabling bridge mode..."
-  # Remove sym links to wconsole
+  # Remove sym links to bridge mode
   unlink $NETWORK_DIR/eth1.network
   unlink $NETWORK_DIR/usb0.network
   unlink $NETWORK_DIR/usb1.network
