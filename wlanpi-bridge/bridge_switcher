@@ -63,6 +63,7 @@ bridge_on () {
   ln -s /etc/wlanpi-bridge/systemd/network/eth0.network $NETWORK_DIR/eth0.network
   ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
   ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
+  ln -s /etc/wlanpi-bridge/systemd/network/br0.network $NETWORK_DIR/br0.network
   ln -s /etc/wlanpi-bridge/systemd/network/br0.netdev $NETWORK_DIR/br0.netdev
 
   # Signal that bridge mode is active
@@ -108,6 +109,10 @@ bridge_off () {
 
   if [ -e $NETWORK_DIR/br0.netdev ]; then
     unlink $NETWORK_DIR/br0.netdev
+  fi
+
+  if [ -e $NETWORK_DIR/br0.network ]; then
+    unlink $NETWORK_DIR/br0.network
   fi
 
   # Restore old files
