@@ -1,0 +1,4 @@
+[Match]
+Name=br0
+[Network]
+DHCPServer=no
