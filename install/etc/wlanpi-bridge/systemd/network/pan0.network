@@ -1,0 +1,5 @@
+[Match]
+Name=pan0
+
+[Network]
+Bridge=br0

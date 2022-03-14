@@ -54,6 +54,16 @@ bridge_on () {
     rm $NETWORK_DIR/usb1.network
   fi
 
+  if [ -e $NETWORK_DIR/wlan1.network ]; then
+    cp $NETWORK_DIR/wlan1.network $NETWORK_DIR/wlan1.network.brm
+    rm $NETWORK_DIR/wlan1.network
+  fi
+
+  if [ -e $NETWORK_DIR/pan0.network ]; then
+    cp $NETWORK_DIR/pan0.network $NETWORK_DIR/pan0.network.brm
+    rm $NETWORK_DIR/pan0.network
+  fi
+
   if [ -e /etc/network/interfaces ]; then
     cp /etc/network/interfaces /etc/network/interfaces.brm
     rm /etc/network/interfaces
@@ -63,6 +73,8 @@ bridge_on () {
   ln -s /etc/wlanpi-bridge/systemd/network/eth0.network $NETWORK_DIR/eth0.network
   ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
   ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
+  ln -s /etc/wlanpi-bridge/systemd/network/wlan1.network $NETWORK_DIR/wlan1.network
+  ln -s /etc/wlanpi-bridge/systemd/network/pan0.network $NETWORK_DIR/pan0.network
   ln -s /etc/wlanpi-bridge/systemd/network/br0.network $NETWORK_DIR/br0.network
   ln -s /etc/wlanpi-bridge/systemd/network/br0.netdev $NETWORK_DIR/br0.netdev
 
@@ -107,6 +119,14 @@ bridge_off () {
     unlink $NETWORK_DIR/usb1.network
   fi
 
+  if [ -e $NETWORK_DIR/wlan1.network ]; then
+    unlink $NETWORK_DIR/wlan1.network
+  fi
+
+  if [ -e $NETWORK_DIR/pan0.network ]; then
+    unlink $NETWORK_DIR/pan0.network
+  fi
+
   if [ -e $NETWORK_DIR/br0.netdev ]; then
     unlink $NETWORK_DIR/br0.netdev
   fi
@@ -126,6 +146,14 @@ bridge_off () {
 
   if [ -e $NETWORK_DIR/usb1.network.brm ]; then
     cp $NETWORK_DIR/usb1.network.brm $NETWORK_DIR/usb1.network
+  fi
+
+  if [ -e $NETWORK_DIR/wlan1.network.brm ]; then
+    cp $NETWORK_DIR/wlan1.network.brm $NETWORK_DIR/wlan1.network
+  fi
+
+  if [ -e $NETWORK_DIR/pan0.network.brm ]; then
+    cp $NETWORK_DIR/pan0.network.brm $NETWORK_DIR/pan0.network
   fi
 
   if [ -e /etc/network/interfaces.brm ]; then

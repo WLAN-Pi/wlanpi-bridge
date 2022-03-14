@@ -1,3 +1,9 @@
+wlanpi-bridge (0.0.6) unstable; urgency=medium
+
+  * Add wlan1 & pan0 support
+
+ -- Nigel Bowden <wifinigel@gmail.com>  Mon, 14 Mar 2022 05:25:31 +0000
+
 wlanpi-bridge (0.0.5) unstable; urgency=medium
 
   * Add DHCP client to br0 to bring WLAN Pi online
