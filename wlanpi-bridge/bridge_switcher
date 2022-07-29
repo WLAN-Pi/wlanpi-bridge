@@ -44,7 +44,7 @@ bridge_on () {
   # move classic mode network files to own networkd dir
   sudo mv $NETWORKD_DIR/*.net* $CLASSIC_MODE_NETWORK_DIR
 
-  # move bridge mode files in to networkd dir
+  # move bridge mode files in to live networkd dir
   sudo mv $BRIDGE_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR 
 
   # Signal that bridge mode is active
@@ -77,10 +77,10 @@ bridge_off () {
 
   echo "Disabling bridge mode..."
   
-  # move classic mode network files to own networkd dir
+  # move bridge mode network files to own networkd dir
   sudo mv $NETWORKD_DIR/*.net* $BRIDGE_MODE_NETWORK_DIR
 
-  # move bridge mode files in to networkd dir
+  # move classic mode files in to live networkd dir
   sudo mv $CLASSIC_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR 
 
   echo "WLAN Pi will now reboot"
