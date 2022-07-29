@@ -10,7 +10,9 @@
 NAME=bridge_switcher
 DESC="Script to switch bridge mode on/off"
 STATUS_FILE="/etc/wlanpi-state"
-NETWORK_DIR=/etc/systemd/network
+NETWORKD_DIR=/etc/systemd/network
+CLASSIC_MODE_NETWORK_DIR=/etc/systemd/network.classic
+BRIDGE_MODE_NETWORK_DIR=/etc/systemd/network.bridge
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -21,9 +23,10 @@ fi
 #
 # Activate bridge mode:
 #
-# 1. Backup existing network files
-# 2. Link to new network config files
-# 3. reboot
+# 1. Check we're in classic mode
+# 2. Move classic mode networkd files back to own dir
+# 3. Move bridge mode networkd files to live networkd dir
+# 4. Reboot
 #
 ###############################################################################
 
@@ -37,46 +40,12 @@ bridge_on () {
   fi
 
   echo "Enabling Bridge mode..."
-  # Backup files & remove originals
-  
-  if [ -e $NETWORK_DIR/eth0.network ]; then
-    cp $NETWORK_DIR/eth0.network $NETWORK_DIR/eth0.network.brm
-    rm $NETWORK_DIR/eth0.network
-  fi
 
-  if [ -e $NETWORK_DIR/eth1.network ]; then
-    cp $NETWORK_DIR/eth1.network $NETWORK_DIR/eth1.network.brm
-    rm $NETWORK_DIR/eth1.network
-  fi
+  # move classic mode network files to own networkd dir
+  sudo mv "$NETWORKD_DIR/*.net*" $CLASSIC_MODE_NETWORK_DIR
 
-  if [ -e $NETWORK_DIR/usb1.network ]; then
-    cp $NETWORK_DIR/usb1.network $NETWORK_DIR/usb1.network.brm
-    rm $NETWORK_DIR/usb1.network
-  fi
-
-  if [ -e $NETWORK_DIR/wlan1.network ]; then
-    cp $NETWORK_DIR/wlan1.network $NETWORK_DIR/wlan1.network.brm
-    rm $NETWORK_DIR/wlan1.network
-  fi
-
-  if [ -e $NETWORK_DIR/pan0.network ]; then
-    cp $NETWORK_DIR/pan0.network $NETWORK_DIR/pan0.network.brm
-    rm $NETWORK_DIR/pan0.network
-  fi
-
-  if [ -e /etc/network/interfaces ]; then
-    cp /etc/network/interfaces /etc/network/interfaces.brm
-    rm /etc/network/interfaces
-  fi
-
-  # Link to file in bridge mode dir
-  ln -s /etc/wlanpi-bridge/systemd/network/eth0.network $NETWORK_DIR/eth0.network
-  ln -s /etc/wlanpi-bridge/systemd/network/eth1.network $NETWORK_DIR/eth1.network
-  ln -s /etc/wlanpi-bridge/systemd/network/usb1.network $NETWORK_DIR/usb1.network
-  ln -s /etc/wlanpi-bridge/systemd/network/wlan1.network $NETWORK_DIR/wlan1.network
-  ln -s /etc/wlanpi-bridge/systemd/network/pan0.network $NETWORK_DIR/pan0.network
-  ln -s /etc/wlanpi-bridge/systemd/network/br0.network $NETWORK_DIR/br0.network
-  ln -s /etc/wlanpi-bridge/systemd/network/br0.netdev $NETWORK_DIR/br0.netdev
+  # move bridge mode files in to networkd dir
+  sudo mv "$BRIDGE_MODE_NETWORK_DIR/*.net*" $NETWORKD_DIR 
 
   # Signal that bridge mode is active
   echo "bridge" > $STATUS_FILE
@@ -90,9 +59,10 @@ bridge_on () {
 #
 # De-activate bridge mode:
 #
-# 1. Remove file links
-# 2. Rename backedup files to original names
-# 3. Reboot
+# 1. Check we're in bridge mode
+# 2. Move bridge mode networkd files back to own dir
+# 3. Move classic mode networkd files back live networkd dir
+# 4. Reboot
 #
 ###############################################################################
 
@@ -106,59 +76,12 @@ bridge_off () {
   fi
 
   echo "Disabling bridge mode..."
-  # Remove sym links to bridge mode
-  if [ -e $NETWORK_DIR/eth0.network ]; then
-    unlink $NETWORK_DIR/eth0.network
-  fi
   
-  if [ -e $NETWORK_DIR/eth1.network ]; then
-    unlink $NETWORK_DIR/eth1.network
-  fi
+  # move classic mode network files to own networkd dir
+  sudo mv "$NETWORKD_DIR/*.net*" $BRIDGE_MODE_NETWORK_DIR
 
-  if [ -e $NETWORK_DIR/usb1.network ]; then
-    unlink $NETWORK_DIR/usb1.network
-  fi
-
-  if [ -e $NETWORK_DIR/wlan1.network ]; then
-    unlink $NETWORK_DIR/wlan1.network
-  fi
-
-  if [ -e $NETWORK_DIR/pan0.network ]; then
-    unlink $NETWORK_DIR/pan0.network
-  fi
-
-  if [ -e $NETWORK_DIR/br0.netdev ]; then
-    unlink $NETWORK_DIR/br0.netdev
-  fi
-
-  if [ -e $NETWORK_DIR/br0.network ]; then
-    unlink $NETWORK_DIR/br0.network
-  fi
-
-  # Restore old files
-  if [ -e $NETWORK_DIR/eth0.network.brm ]; then
-    cp $NETWORK_DIR/eth0.network.brm $NETWORK_DIR/eth0.network
-  fi
-
-  if [ -e $NETWORK_DIR/eth1.network.brm ]; then
-    cp $NETWORK_DIR/eth1.network.brm $NETWORK_DIR/eth1.network
-  fi
-
-  if [ -e $NETWORK_DIR/usb1.network.brm ]; then
-    cp $NETWORK_DIR/usb1.network.brm $NETWORK_DIR/usb1.network
-  fi
-
-  if [ -e $NETWORK_DIR/wlan1.network.brm ]; then
-    cp $NETWORK_DIR/wlan1.network.brm $NETWORK_DIR/wlan1.network
-  fi
-
-  if [ -e $NETWORK_DIR/pan0.network.brm ]; then
-    cp $NETWORK_DIR/pan0.network.brm $NETWORK_DIR/pan0.network
-  fi
-
-  if [ -e /etc/network/interfaces.brm ]; then
-    cp /etc/network/interfaces.brm /etc/network/interfaces
-  fi
+  # move bridge mode files in to networkd dir
+  sudo mv "$CLASSIC_MODE_NETWORK_DIR/*.net*" $NETWORKD_DIR 
 
   echo "WLAN Pi will now reboot"
   echo "classic" > $STATUS_FILE
