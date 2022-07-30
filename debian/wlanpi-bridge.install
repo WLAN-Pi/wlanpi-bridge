@@ -1,4 +1,4 @@
-install/etc/systemd/network.bridge etc/systemd
+install/etc/wlanpi-bridge etc
 wlanpi-bridge/ opt
 
 
