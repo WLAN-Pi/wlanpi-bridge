@@ -12,7 +12,7 @@ DESC="Script to switch bridge mode on/off"
 STATUS_FILE="/etc/wlanpi-state"
 NETWORKD_DIR=/etc/systemd/network
 CLASSIC_MODE_NETWORK_DIR=/etc/systemd/network.classic
-BRIDGE_MODE_NETWORK_DIR=/etc/wlanpi-bridge/etc/install/systemd/network
+BRIDGE_MODE_NETWORK_DIR=/etc/wlanpi-bridge/systemd/network
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
