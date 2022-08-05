@@ -11,8 +11,10 @@ NAME=bridge_switcher
 DESC="Script to switch bridge mode on/off"
 STATUS_FILE="/etc/wlanpi-state"
 NETWORKD_DIR=/etc/systemd/network
+WPA_DIR=/etc/wpa_supplicant
 CLASSIC_MODE_NETWORK_DIR=/etc/systemd/network.classic
 BRIDGE_MODE_NETWORK_DIR=/etc/wlanpi-bridge/systemd/network
+BRIDGE_MODE_WPA_DIR=/etc/wlanpi-bridge/wpa_supplicant
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -43,9 +45,13 @@ bridge_on () {
 
   # move classic mode network files to own networkd dir
   sudo mv $NETWORKD_DIR/*.net* $CLASSIC_MODE_NETWORK_DIR
+  # move classic mode wpa_supplicant files to own networkd dir
+  sudo mv $WPA_DIR/wpa*.conf $CLASSIC_MODE_NETWORK_DIR
 
-  # move bridge mode files in to live networkd dir
-  sudo mv $BRIDGE_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR 
+  # move bridge mode network files in to live networkd dir
+  sudo mv $BRIDGE_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR
+  # move bridge mode wpa_supplicant files in to live networkd dir
+  sudo mv $BRIDGE_MODE_WPA_DIR/wpa*.conf $WPA_DIR
 
   # Signal that bridge mode is active
   echo "bridge" > $STATUS_FILE
@@ -80,8 +86,14 @@ bridge_off () {
   # move bridge mode network files to own networkd dir
   sudo mv $NETWORKD_DIR/*.net* $BRIDGE_MODE_NETWORK_DIR
 
+  # move bridge mode wpa_supplicant files back to own networkd dir
+  sudo mv $WPA_DIR/wpa*.conf $BRIDGE_MODE_WPA_DIR
+
   # move classic mode files in to live networkd dir
-  sudo mv $CLASSIC_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR 
+  sudo mv $CLASSIC_MODE_NETWORK_DIR/*.net* $NETWORKD_DIR
+
+  # move classic mode wpa_supplicant files live networkd dir
+  sudo mv $CLASSIC_MODE_NETWORK_DIR/wpa*.conf $WPA_DIR
 
   echo "WLAN Pi will now reboot"
   echo "classic" > $STATUS_FILE
