@@ -9,7 +9,7 @@
 
 NAME="bridge_switcher"
 DESC="Script to switch bridge mode on/off"
-VERSION="0.0.6"
+VERSION="1.0.0"
 STATUS_FILE="/etc/wlanpi-state"
 NETWORKD_DIR="/etc/systemd/network"
 WPA_DIR="/etc/wpa_supplicant"

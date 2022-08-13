@@ -1,3 +1,9 @@
+wlanpi-bridge (1.0.0) unstable; urgency=medium
+
+  * Move to networkd support
+
+ -- Nigel Bowden <wifinigel@gmail.com>  Sat, 13 Mar 2022 17:53:45 +0000
+
 wlanpi-bridge (0.0.6) unstable; urgency=medium
 
   * Add wlan1 & pan0 support
