@@ -1,3 +1,9 @@
+wlanpi-bridge (0.0.7) unstable; urgency=medium
+
+  * Rebuild to publish packages for Debian trixie to packagecloud.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 15 Jul 2026 03:20:17 -0400
+
 wlanpi-bridge (0.0.6) unstable; urgency=medium
 
   * Rebuild to publish packages for Debian trixie to packagecloud
